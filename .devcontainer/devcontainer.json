@@ -1,18 +1,13 @@
 {
   "name": "Hermes Agent",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
-  "postCreateCommand": "curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash && pip install 'hermes-agent[web]'",
-  "postStartCommand": "nohup hermes dashboard > /tmp/dashboard.log 2>&1 & nohup hermes gateway > /tmp/gateway.log 2>&1 &",
+  "postCreateCommand": "curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash; pip install 'hermes-agent[web]'; echo 'Hermes install done' >> /tmp/hermes-setup.log",
+  "postStartCommand": "export PATH=\"$HOME/.local/bin:/usr/local/bin:$PATH\"; sleep 5; if command -v hermes >/dev/null 2>&1; then nohup hermes dashboard > /tmp/dashboard.log 2>&1 & nohup hermes gateway > /tmp/gateway.log 2>&1 & echo \"Hermes started at $(date)\" >> /tmp/hermes-startup.log; else echo \"Hermes not found at $(date), PATH=$PATH\" >> /tmp/hermes-startup.log; fi",
   "forwardPorts": [9119],
   "portsAttributes": {
     "9119": {
       "label": "Hermes Dashboard",
       "onAutoForward": "notify"
-    }
-  },
-  "customizations": {
-    "vscode": {
-      "extensions": []
     }
   }
 }
